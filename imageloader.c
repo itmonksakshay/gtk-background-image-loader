@@ -30,7 +30,11 @@ static gint draw_cb (GtkWidget *widget,cairo_t   *cr,gpointer   data) {
 int main (int argc, char **argv)
 {
     GtkWidget *da, *window = NULL;
-        
+    GtkWidget *label;
+    GtkWidget *entry;
+    GtkWidget *overlay;
+    GtkWidget *vbox;
+   
     gtk_init (&argc, &argv);
     /* Load a non animated gif */
     bgimage = load_pixbuf("./coderain.png");
@@ -43,12 +47,32 @@ int main (int argc, char **argv)
     	
     window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
     gtk_window_set_title (GTK_WINDOW(window), "Load Image");
-    gtk_widget_set_size_request (window, 600,600);
+    gtk_window_set_default_size (GTK_WINDOW (window), 600, 500);
     gtk_window_set_resizable (GTK_WINDOW (window), FALSE);
-    
-    gtk_container_add (GTK_CONTAINER (window), da);
+
+    overlay = gtk_overlay_new ();
+	/* Vertical Box */
+	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 10);
+      	gtk_widget_set_halign (vbox, GTK_ALIGN_CENTER);
+      	gtk_widget_set_valign (vbox, GTK_ALIGN_CENTER);
+	
+	/* Add Component in Vertical Box */
+      	label = gtk_label_new ("<span foreground='blue' weight='ultrabold' font='40'>Numbers</span>");
+      	gtk_label_set_use_markup (GTK_LABEL (label), TRUE);
+      	entry = gtk_entry_new ();
+      	gtk_entry_set_placeholder_text (GTK_ENTRY (entry), "MAYAJAL");
+      	
+	/* Pack components in V box*/
+	gtk_box_pack_start (GTK_BOX (vbox), label, FALSE, FALSE, 8);
+      	gtk_box_pack_start (GTK_BOX (vbox), entry, FALSE, FALSE, 8);
+	
+	/* Add Widgets in Overlay*/
+	gtk_overlay_add_overlay (GTK_OVERLAY (overlay),da);
+	gtk_overlay_add_overlay (GTK_OVERLAY (overlay), vbox);
+      	//gtk_overlay_set_overlay_pass_through (GTK_OVERLAY (overlay), vbox, TRUE);
+        gtk_container_add (GTK_CONTAINER (window), overlay);
 
     gtk_widget_show_all (window);
-    gtk_main ();
+    gtk_main ();	    
     return 0;
 }
